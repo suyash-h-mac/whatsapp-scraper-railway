@@ -1,10 +1,22 @@
 FROM python:3.10-slim
 
-# Install Chromium + driver + dependencies for headless operation
-RUN apt-get update \
-    && apt-get install -y wget unzip curl chromium chromium-driver \
-       libnss3 libglib2.0-0 libgconf-2-4 libfontconfig1 libx11-6 libxrender1 libxss1 \
-    && ln -s /usr/lib/chromium/chromedriver /usr/bin/chromedriver
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    wget unzip curl gnupg \
+    libnss3 libgconf-2-4 libxss1 libasound2 libx11-6 libxrender1 libfontconfig1 libxcb1 \
+    libglib2.0-0 libgtk-3-0 libu2f-udev libvulkan1 xvfb
+
+# Install Google Chrome
+RUN wget -q -O chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+    && apt install -y ./chrome.deb \
+    && rm chrome.deb
+
+# Install matching ChromeDriver
+RUN CHROME_VERSION=$(google-chrome --version | sed 's/Google Chrome //') && \
+    MAJOR=$(echo $CHROME_VERSION | cut -d '.' -f 1) && \
+    wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/${MAJOR}.0.5735.90/chromedriver_linux64.zip && \
+    unzip /tmp/chromedriver.zip -d /usr/local/bin/ && \
+    chmod +x /usr/local/bin/chromedriver
 
 WORKDIR /app
 
