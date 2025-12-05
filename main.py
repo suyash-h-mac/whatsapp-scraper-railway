@@ -37,13 +37,15 @@ def get_browser():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--disable-gpu")
-    # point to system chromium binary
-    chrome_options.binary_location = "/usr/bin/chromium"
+    chrome_options.add_argument("--remote-debugging-port=9222")
+    chrome_options.add_argument("--window-size=1920,1080")
 
-    # use system chromedriver
-    service = Service("/usr/bin/chromedriver")
-    browser = webdriver.Chrome(service=service, options=chrome_options)
-    return browser
+    chrome_options.binary_location = "/usr/bin/google-chrome"
+
+    service = Service("/usr/local/bin/chromedriver")
+
+    return webdriver.Chrome(service=service, options=chrome_options)
+
 
 
 
