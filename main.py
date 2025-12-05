@@ -1,19 +1,22 @@
-import time
+import os
+import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
 
-# ---------------------------------------
-# GOOGLE SHEETS SETUP
-# ---------------------------------------
-SHEET_ID = "1WFs84wUvlH2Gf8kUIk1Wp3piEpUH2XJl6mUWfgyakBc"
-TAB_NAME = "1C"
+SHEET_ID = os.environ.get("SHEET_ID")
+TAB_NAME = os.environ.get("TAB_NAME", "Sheet1")
 
 def get_sheet():
-    scope = ["https://spreadsheets.google.com/feeds",
-             "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_name("creds.json", scope)
+    scope = [
+        "https://spreadsheets.google.com/feeds",
+        "https://www.googleapis.com/auth/drive"
+    ]
+
+    # Load from env var instead of file
+    creds_json = os.environ["GOOGLE_CREDENTIALS"]
+    service_account_info = json.loads(creds_json)
+
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(service_account_info, scope)
     client = gspread.authorize(creds)
     return client.open_by_key(SHEET_ID).worksheet(TAB_NAME)
 
