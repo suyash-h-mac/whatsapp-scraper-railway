@@ -8,6 +8,8 @@ from oauth2client.service_account import ServiceAccountCredentials
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
 
 
 SHEET_ID = os.environ.get("SHEET_ID")
@@ -32,18 +34,19 @@ def get_sheet():
 # ---------------------------------------
 def get_browser():
     chrome_options = Options()
-    chrome_options.add_argument("--headless=new")        # headless chrome
+    chrome_options.add_argument("--headless=new")        # run headless
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
 
-    # Path to Chromium binary inside the Docker image
+    # Chromium binary installed by apt
     chrome_options.binary_location = "/usr/bin/chromium"
 
-    # Path to ChromeDriver binary
-    service = Service("/usr/bin/chromedriver")
+    # webdriver-manager downloads the correct driver at runtime
+    service = Service(ChromeDriverManager().install())
 
     browser = webdriver.Chrome(service=service, options=chrome_options)
     return browser
+
 
 
 # ---------------------------------------
