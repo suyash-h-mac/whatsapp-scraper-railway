@@ -1,14 +1,13 @@
 import os
 import json
 import time
-
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
+
 
 
 
@@ -34,18 +33,18 @@ def get_sheet():
 # ---------------------------------------
 def get_browser():
     chrome_options = Options()
-    chrome_options.add_argument("--headless=new")        # run headless
+    chrome_options.add_argument("--headless=new")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-
-    # Chromium binary installed by apt
+    chrome_options.add_argument("--disable-gpu")
+    # point to system chromium binary
     chrome_options.binary_location = "/usr/bin/chromium"
 
-    # webdriver-manager downloads the correct driver at runtime
-    service = Service(ChromeDriverManager().install())
-
+    # use system chromedriver
+    service = Service("/usr/bin/chromedriver")
     browser = webdriver.Chrome(service=service, options=chrome_options)
     return browser
+
 
 
 
