@@ -1,7 +1,14 @@
 import os
 import json
+import time
+
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+
 
 SHEET_ID = os.environ.get("SHEET_ID")
 TAB_NAME = os.environ.get("TAB_NAME", "Sheet1")
