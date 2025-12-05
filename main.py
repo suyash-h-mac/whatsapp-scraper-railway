@@ -32,13 +32,19 @@ def get_sheet():
 # ---------------------------------------
 def get_browser():
     chrome_options = Options()
-    chrome_options.add_argument("--headless=new")
+    chrome_options.add_argument("--headless=new")        # headless chrome
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
-    chrome_options.add_argument("--remote-debugging-port=9222")
 
-    browser = webdriver.Chrome(options=chrome_options)
+    # Path to Chromium binary inside the Docker image
+    chrome_options.binary_location = "/usr/bin/chromium"
+
+    # Path to ChromeDriver binary
+    service = Service("/usr/bin/chromedriver")
+
+    browser = webdriver.Chrome(service=service, options=chrome_options)
     return browser
+
 
 # ---------------------------------------
 # SCRAPE WHATSAPP
